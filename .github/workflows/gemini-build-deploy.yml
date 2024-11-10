@@ -1,0 +1,26 @@
+name: Build and Deploy with Gemini
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Install Gemini CLI
+        run: |
+          curl -sSL https://get.gemini.sh | bash
+
+      - name: Setup Environment
+        run: gemini run --env=production
+
+      - name: Publish to Production
+        if: github.ref == 'refs/heads/main'
+        run: |
+          gemini app publish --target=production
